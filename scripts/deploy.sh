@@ -21,5 +21,6 @@ CROFT_INDEX_KEY="$KEY" ./scripts/build-index.sh
 mkdir -p "$PUB"
 install -m 644 index.json "$PUB/index.json"
 install -m 644 index.json.sig "$PUB/index.json.sig"
+install -m 644 index.html "$PUB/index.html"
 rsync -a --delete extensions/ "$PUB/extensions/"
 echo "published index ($(date -u +%FT%TZ))"

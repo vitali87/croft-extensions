@@ -7,3 +7,4 @@
 # truth; the index is derived, so it is not tracked.
 /index.json
 /index.json.sig
+/index.html
