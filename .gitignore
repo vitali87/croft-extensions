@@ -1,0 +1,9 @@
+# Signing keys: NEVER commit. Private key lives only as a CI secret.
+*.key
+*.pem
+
+# Generated, published artifacts (built by scripts/build-index.sh, served from
+# extensions.croft.software). The manifests under extensions/ are the source of
+# truth; the index is derived, so it is not tracked.
+/index.json
+/index.json.sig

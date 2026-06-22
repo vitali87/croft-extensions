@@ -1,0 +1,28 @@
+# Codeberg CI (Woodpecker): build + sign + publish the extension index to the VPS.
+#
+# Secrets to configure in the repo settings (Settings -> Secrets):
+#   croft_index_key   the ed25519 PRIVATE key (full PEM, from gen-keypair.sh)
+#   deploy_ssh_key    an SSH private key authorized to rsync to the VPS
+#   deploy_host       the VPS host (e.g. croft.software or its IP)
+#   deploy_path       static dir served at https://extensions.croft.software
+#                     (e.g. /var/www/extensions.croft.software)
+when:
+  - event: push
+    branch: main
+
+steps:
+  publish:
+    image: python:3.13-slim
+    secrets: [croft_index_key, deploy_ssh_key, deploy_host, deploy_path]
+    commands:
+      - apt-get update -qq && apt-get install -y -qq openssl openssh-client rsync xxd
+      # Sign with the private key (written to a tmp file, never the cmdline).
+      - umask 077; printf '%s' "$CROFT_INDEX_KEY" > /tmp/index.key
+      - CROFT_INDEX_KEY=/tmp/index.key ./scripts/build-index.sh
+      # Publish index + signature + the manifests (served as static files).
+      - mkdir -p ~/.ssh && printf '%s' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+      - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+      - >
+        rsync -az --delete-after
+        index.json index.json.sig extensions
+        "deploy@$DEPLOY_HOST:$DEPLOY_PATH/"
