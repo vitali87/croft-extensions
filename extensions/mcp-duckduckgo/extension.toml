@@ -1,0 +1,22 @@
+# Catalog entry (MCP sidecar): DuckDuckGo Search. Keyless. Web search via
+# DuckDuckGo's HTML endpoint (no API key). Tool `search(query)` returns result
+# snippets as Markdown — fits croft's one-string-arg command model.
+# Upstream: github.com/nickclyde/duckduckgo-mcp-server (MIT), PyPI 0.4.0.
+id = "mcp-duckduckgo"
+name = "DuckDuckGo Search"
+description = "Search the web with DuckDuckGo (keyless); results open as Markdown."
+builtin = false
+api_version = 1
+
+[[mcp_servers]]
+id = "ddg"
+command = "duckduckgo-mcp-server"
+provision = { kind = "uv", package = "duckduckgo-mcp-server", version = "0.4.0", bin = "duckduckgo-mcp-server" }
+
+[[commands]]
+id = "ddg.search"
+title = "Web: Search with DuckDuckGo"
+server = "ddg"
+tool = "search"
+arg = "query"
+prompt = "Search query"
