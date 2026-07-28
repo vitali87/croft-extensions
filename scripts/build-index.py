@@ -44,7 +44,7 @@ def build(root: Path, base_url: str) -> dict:
     return {"schema": SCHEMA_VERSION, "extensions": extensions}
 
 
-REPO_URL = "https://codeberg.org/vitali87/croft-extensions"
+REPO_URL = "https://github.com/vitali87/croft-extensions"
 
 PAGE_CSS = """
 :root { color-scheme: dark; }
